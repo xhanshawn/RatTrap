@@ -1,0 +1,39 @@
+#!/usr/bin/env ruby
+
+require 'rat_trap'
+
+require 'commander/import'
+
+include RatTrap
+
+program :name, "Ruby CLI"
+program :version, '1.0.0'
+program :description, 'A Ruby cli for MessagePack(bin) files.'
+
+# command :extract do |c|
+#   c.syntax = 'ruby-cli'
+#   c.description = 'Extract foo and bar'
+#   c.option '--bar STRING', String, 'Option bar with a string'
+#   c.action do |args, options|
+#       options.default :bar => 'BAR'
+#       puts 'Extracting..'
+#       puts "Args: #{args}"
+#       puts "Option Bar: #{options.bar}"
+#   end
+# end
+
+command :r do |c|
+  c.syntax = 'rat r'
+  c.description = 'run'
+  c.action do |args, options|
+    RatTrap.run(args, options)
+  end
+end
+
+command :up do |c|
+  c.syntax = 'rat up'
+  c.description = 'unpack here'
+  c.action do |args, options|
+    RatTrap.unpack_here(args, options)
+  end
+end
