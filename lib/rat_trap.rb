@@ -1,5 +1,6 @@
 require "rat_trap/version"
 require 'msgpack'
+require 'json'
 
 module RatTrap
 
@@ -50,11 +51,28 @@ module RatTrap
       end
     File.open(path, "wb") do |f|
       rat = MessagePack.unpack(File.read(file))
-      data = rat.map(&:to_s).join("\n") + "\n"
+      data =
+        case rat
+        when Hash
+          rat.each do |k, v|
+            if v.is_a? Array
+              rat[k] = v.map do |row|
+                row.to_s.gsub('"', '')
+              end
+            end
+          end
+          JSON.pretty_generate(rat)
+        when Array
+          pretty_print_array(rat)
+        end
       f.write(data)
     end
   ensure
     FileUtils.rm_rf(tempfile) unless options[:retain]
+  end
+
+  def pretty_print_array(as)
+    as.map(&:to_s).join("\n") + "\n"
   end
 
   def temp_path(file)
